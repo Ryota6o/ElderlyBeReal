@@ -1,5 +1,5 @@
 import * as Crypto from 'expo-crypto';
-import { File } from 'expo-file-system';
+import { readImageFile } from './readImageFile';
 import { supabase } from './supabase';
 import type {
   ElderInfo,
@@ -317,13 +317,12 @@ export async function setSelfIcon({ userId, iconUrl }: { userId: string; iconUrl
 
 /** 端末上の画像ファイルを Storage に上げ、公開 URL を返す。写真・アイコン共通。 */
 async function uploadImageFile(objectPath: string, fileUri: string): Promise<string> {
-  // React Native の fetch() は file:// を読めず "Network request failed" になるため、
-  // 端末上のファイルは expo-file-system の File 経由で読む。
-  // また Blob をそのまま渡すと、エラーにならないまま0バイトのオブジェクトが
+  // 端末上のファイルの読み方はスマホと Web で違うので readImageFile に任せる（詳細はそちら）。
+  // Blob をそのまま渡すと、エラーにならないまま0バイトのオブジェクトが
   // 作成されることがあるため、ArrayBuffer に変換してから渡す。
   let file: ArrayBuffer;
   try {
-    file = await new File(fileUri).arrayBuffer();
+    file = await readImageFile(fileUri);
   } catch (cause) {
     throw new Error(`画像ファイルの読み込みに失敗しました。(${String(cause)})`);
   }

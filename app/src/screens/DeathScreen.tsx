@@ -6,10 +6,10 @@ import {
   StyleSheet,
   Animated,
   Easing,
-  Alert,
   ActivityIndicator,
-  useWindowDimensions,
 } from 'react-native';
+import { Alert } from '../alert';
+import { useScreenSize } from '../useScreenSize';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useGroup } from '../context/GroupContext';
 import { getElderInfo, listPhotos, resetLife } from '../api/client';
@@ -109,7 +109,7 @@ function FloatingPhoto({ spec }: { spec: FloatingSpec }) {
  */
 export default function DeathScreen({ navigation }: Props) {
   const { state, clearGroupState } = useGroup();
-  const { width, height } = useWindowDimensions();
+  const { width, height } = useScreenSize();
   const [photos, setPhotos] = useState<Photo[] | null>(null);
   const [elder, setElder] = useState<{ name: string | null; age: number | null; iconUrl: string | null }>({
     name: null,

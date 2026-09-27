@@ -6,12 +6,12 @@ import {
   Pressable,
   Image,
   StyleSheet,
-  Alert,
   ScrollView,
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import { Alert } from '../alert';
 import * as ImagePicker from 'expo-image-picker';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Camera as CameraIcon, Lock } from 'lucide-react-native';
@@ -125,6 +125,11 @@ export default function ProfileScreen({ navigation, route }: Props) {
   }, [load]);
 
   const pickIcon = (target: IconTarget) => {
+    // Web は3択のダイアログを出せない。ブラウザのファイル選択はスマホならカメラも選べるので、そちらに任せる。
+    if (Platform.OS === 'web') {
+      launchPicker(target, 'library');
+      return;
+    }
     Alert.alert(target === 'self' ? '自分のアイコン' : `${seniorName(elderName)}のアイコン`, '写真をどこから選びますか？', [
       { text: 'カメラで撮る', onPress: () => launchPicker(target, 'camera') },
       { text: 'アルバムから選ぶ', onPress: () => launchPicker(target, 'library') },
@@ -277,7 +282,6 @@ export default function ProfileScreen({ navigation, route }: Props) {
                 style={[styles.input, selfLocked && styles.inputLocked]}
                 value={selfName}
                 onChangeText={setSelfName}
-                placeholder="たろう"
                 editable={!selfLocked}
               />
               <Text style={styles.label}>年齢</Text>
@@ -285,7 +289,6 @@ export default function ProfileScreen({ navigation, route }: Props) {
                 style={[styles.input, styles.inputAge, selfLocked && styles.inputLocked]}
                 value={selfAge}
                 onChangeText={setSelfAge}
-                placeholder="20"
                 keyboardType="number-pad"
                 maxLength={3}
                 editable={!selfLocked}
@@ -303,13 +306,12 @@ export default function ProfileScreen({ navigation, route }: Props) {
             <AvatarPicker target="elder" uri={elderIcon} isUploading={uploading === 'elder'} onPress={() => pickIcon('elder')} />
             <View style={styles.fields}>
               <Text style={styles.label}>名前</Text>
-              <TextInput style={styles.input} value={elderName} onChangeText={setElderName} placeholder="私の祖父" />
+              <TextInput style={styles.input} value={elderName} onChangeText={setElderName} />
               <Text style={styles.label}>年齢</Text>
               <TextInput
                 style={[styles.input, styles.inputAge]}
                 value={elderAge}
                 onChangeText={setElderAge}
-                placeholder="80"
                 keyboardType="number-pad"
                 maxLength={3}
               />

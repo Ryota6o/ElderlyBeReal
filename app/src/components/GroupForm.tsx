@@ -5,10 +5,10 @@ import {
   TextInput,
   Pressable,
   StyleSheet,
-  Alert,
   ScrollView,
   ActivityIndicator,
 } from 'react-native';
+import { Alert } from '../alert';
 import {
   GROUP_ID_PATTERN,
   createGroup,

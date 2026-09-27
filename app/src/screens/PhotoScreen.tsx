@@ -6,11 +6,11 @@ import {
   Pressable,
   StyleSheet,
   ActivityIndicator,
-  Alert,
   ScrollView,
   Animated,
   Easing,
 } from 'react-native';
+import { Alert } from '../alert';
 import * as Crypto from 'expo-crypto';
 import * as ImagePicker from 'expo-image-picker';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';

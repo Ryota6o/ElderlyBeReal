@@ -8,9 +8,8 @@ import {
   Modal,
   StyleSheet,
   ActivityIndicator,
-  Alert,
-  useWindowDimensions,
 } from 'react-native';
+import { Alert } from '../alert';
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ChevronDown, X } from 'lucide-react-native';
@@ -20,6 +19,7 @@ import { CHILD_LABEL, seniorName } from '../labels';
 import { colors, radius, cardShadow } from '../theme';
 import WashiBackground from '../components/WashiBackground';
 import type { Photo } from '../api/types';
+import type { LayoutChangeEvent } from 'react-native';
 
 const SCREEN_PADDING = 16;
 const CALENDAR_COLUMNS = 7;
@@ -148,7 +148,9 @@ function PickerSheet({
  */
 export default function HistoryScreen() {
   const { state } = useGroup();
-  const { width } = useWindowDimensions();
+  // マス目の幅は、画面幅からの計算ではなくカレンダーの実際の幅から決める。
+  // Web では日付を選んで下の写真が増えるとスクロールバーが出て幅が縮み、7列に収まらず崩れるため。
+  const [gridWidth, setGridWidth] = useState(0);
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selected, setSelected] = useState(() => {
@@ -222,9 +224,9 @@ export default function HistoryScreen() {
   const monthInfo = MONTHS[selected.month];
   const paperColor = mixWithWhite(monthInfo.color, PAPER_WASH);
   const days = getCalendarDays(selected.year, selected.month);
-  const cardInnerWidth = width - SCREEN_PADDING * 2 - 12 * 2;
-  const cellWidth = (cardInnerWidth - CELL_GAP * (CALENDAR_COLUMNS - 1)) / CALENDAR_COLUMNS;
-  const thumbSize = cellWidth - 6;
+  const cellWidth = Math.floor((gridWidth - CELL_GAP * (CALENDAR_COLUMNS - 1)) / CALENDAR_COLUMNS);
+  const thumbSize = Math.max(cellWidth - 6, 0);
+  const handleGridLayout = (event: LayoutChangeEvent) => setGridWidth(event.nativeEvent.layout.width);
   const selectedDate = new Date(selected.year, selected.month, selected.day);
   const selectedPhotos = photosByDay.get(dayKey(selectedDate)) ?? [];
   const monthCount = days.reduce((sum, day) => sum + (day ? (photosByDay.get(dayKey(day))?.length ?? 0) : 0), 0);
@@ -267,7 +269,7 @@ export default function HistoryScreen() {
             </View>
           </View>
 
-          <View style={styles.weekRow}>
+          <View style={styles.weekRow} onLayout={handleGridLayout}>
             {WEEKDAYS.map((weekday) => (
               <Text key={weekday} style={[styles.weekday, { width: cellWidth, color: monthInfo.ink }]}>
                 {weekday}

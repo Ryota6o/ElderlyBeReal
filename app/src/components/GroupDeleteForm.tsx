@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, Pressable, StyleSheet, Alert, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, Pressable, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import { Alert } from '../alert';
 import { deleteGroup, listGroups } from '../api/client';
 import { useGroup } from '../context/GroupContext';
 import WashiButton from './WashiButton';

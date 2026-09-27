@@ -7,8 +7,8 @@ import {
   ScrollView,
   Keyboard,
   Platform,
-  useWindowDimensions,
 } from 'react-native';
+import { useScreenSize } from '../useScreenSize';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import GroupForm from '../components/GroupForm';
@@ -35,7 +35,7 @@ const INK = '#fff';
 const MUTED = 'rgba(255,255,255,0.55)';
 
 export default function WelcomeScreen({ navigation }: Props) {
-  const { height: windowHeight, width: windowWidth } = useWindowDimensions();
+  const { height: windowHeight, width: windowWidth } = useScreenSize();
   const [mode, setMode] = useState<WelcomeMode>('menu');
 
   // 初回表示: 見出し → 写真 → ボタン の順にふわっと出す

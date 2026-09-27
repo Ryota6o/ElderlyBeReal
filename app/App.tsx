@@ -2,9 +2,10 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Pressable, StyleSheet } from 'react-native';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { Camera, Image as ImageIcon, Settings as SettingsIcon } from 'lucide-react-native';
 import { colors } from './src/theme';
+import { PHONE_MAX_WIDTH } from './src/phoneFrame';
 import { GroupProvider, useGroup } from './src/context/GroupContext';
 import WelcomeScreen from './src/screens/WelcomeScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
@@ -141,14 +142,30 @@ function RootNavigator() {
 }
 
 export default function App() {
-  return (
+  const app = (
     <GroupProvider>
       <NavigationContainer>
         <RootNavigator />
       </NavigationContainer>
     </GroupProvider>
   );
+
+  if (Platform.OS !== 'web') {
+    return app;
+  }
+
+  // Web を PC の広い画面で開いたときは、中央のスマホ幅の枠に収める
+  return (
+    <View style={webFrameStyles.backdrop}>
+      <View style={webFrameStyles.phone}>{app}</View>
+    </View>
+  );
 }
+
+const webFrameStyles = StyleSheet.create({
+  backdrop: { flex: 1, alignItems: 'center', backgroundColor: '#1a1a1a' },
+  phone: { flex: 1, width: '100%', maxWidth: PHONE_MAX_WIDTH, overflow: 'hidden' },
+});
 
 const homeTabStyles = StyleSheet.create({
   settingsButton: { paddingHorizontal: 12, paddingVertical: 4 },
