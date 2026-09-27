@@ -13,6 +13,7 @@ import {
 import { Alert } from '../alert';
 import * as Crypto from 'expo-crypto';
 import * as ImagePicker from 'expo-image-picker';
+import { launchImageLibrary } from '../launchImageLibrary';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ThumbsUp, Camera, Images } from 'lucide-react-native';
@@ -207,7 +208,7 @@ export default function PhotoScreen() {
       const options: ImagePicker.ImagePickerOptions = { mediaTypes: ['images'], quality: 0.8 };
       const result = source === 'camera'
         ? await ImagePicker.launchCameraAsync(options)
-        : await ImagePicker.launchImageLibraryAsync(options);
+        : await launchImageLibrary(options);
 
       if (!result.canceled && result.assets.length > 0) {
         navigation.navigate('ConfirmSend', { uri: result.assets[0].uri });

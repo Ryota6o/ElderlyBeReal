@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { Alert } from '../alert';
 import * as ImagePicker from 'expo-image-picker';
+import { launchImageLibrary } from '../launchImageLibrary';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Camera as CameraIcon, Lock } from 'lucide-react-native';
 import { useGroup } from '../context/GroupContext';
@@ -159,7 +160,7 @@ export default function ProfileScreen({ navigation, route }: Props) {
       };
       const result = source === 'camera'
         ? await ImagePicker.launchCameraAsync(options)
-        : await ImagePicker.launchImageLibraryAsync(options);
+        : await launchImageLibrary(options);
       if (result.canceled || result.assets.length === 0) {
         return;
       }
