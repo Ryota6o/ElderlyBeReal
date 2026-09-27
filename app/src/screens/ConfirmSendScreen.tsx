@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, Image, StyleSheet, ActivityIndicator } from 'react-native';
+import { Alert } from '../alert';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useGroup } from '../context/GroupContext';
 import { uploadPhoto } from '../api/client';

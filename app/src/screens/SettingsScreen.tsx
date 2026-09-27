@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, Pressable, StyleSheet, Alert, ScrollView } from 'react-native';
+import { View, Text, Pressable, StyleSheet, ScrollView } from 'react-native';
+import { Alert } from '../alert';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import GroupForm from '../components/GroupForm';
 import WashiBackground from '../components/WashiBackground';

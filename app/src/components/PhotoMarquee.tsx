@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useRef } from 'react';
-import { View, Image, Animated, Easing, StyleSheet, useWindowDimensions } from 'react-native';
+import { View, Image, Animated, Easing, StyleSheet } from 'react-native';
+import { useScreenSize } from '../useScreenSize';
 import type { ImageSourcePropType, StyleProp, ViewStyle } from 'react-native';
+import { getAssetSize } from '../assetSize';
 
 interface Props {
   photos: ImageSourcePropType[];
@@ -29,7 +31,7 @@ const MAX_ASPECT = 1.8;
  * 列全体を2回並べるより Image の数が大きく減る（42枚なら 84 → 46 程度）。
  *
  * 縦長・横長が混ざっていても切り抜かずに済むよう、高さを揃えて幅を写真ごとに変える。
- * 同梱アセットは Image.resolveAssetSource で寸法が取れる。
+ * 同梱アセットの寸法は getAssetSize で取る（Web 版は別実装）。
  */
 export default function PhotoMarquee({
   photos,
@@ -40,12 +42,12 @@ export default function PhotoMarquee({
   reverse = false,
   style,
 }: Props) {
-  const { width: screenWidth } = useWindowDimensions();
+  const { width: screenWidth } = useScreenSize();
 
   const { cards, total } = useMemo(() => {
     const base = photos.map((source) => {
-      const resolved = Image.resolveAssetSource(source);
-      const aspect = resolved?.width && resolved?.height ? resolved.width / resolved.height : 1.5;
+      const size = getAssetSize(source);
+      const aspect = size ? size.width / size.height : 1.5;
       const clamped = Math.min(MAX_ASPECT, Math.max(MIN_ASPECT, aspect));
       return { source, width: Math.round(cardHeight * clamped) };
     });
